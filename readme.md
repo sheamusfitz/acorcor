@@ -24,7 +24,7 @@ Computes the bias-corrected autocorrelation estimator for an exponential decay.
 
 Computes the bias-corrected autocorrelation estimator for a stretched exponential decay.
 - `t`: Array of lag times
-- `tau`: Autocorrelation decay time. This is **not** the `mean relaxation time' (that is $\\tau \Gamma(b+1)$).
+- `tau`: Autocorrelation decay time. This is **not** the `mean relaxation time' (that is $`\tau \Gamma(b+1)`$).
 - `b`: Stretching exponent
 - `n`: Length of original time series
 - `a`: Amplitude (default=1)
