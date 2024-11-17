@@ -6,9 +6,9 @@ This module provides implementations of bias-corrected autocorrelation estimator
 
 - Corrected autocorrelation estimators that account for finite-size effects
 - Support for multiple functional forms:
-  - Exponential: $`a*exp(-t/tau)`$
-  - Stretched exponential: $`a*exp(-(t/tau)^(1/b))`$
-  - Power law decay: $`a/(1+t/t0)`$
+  - Exponential: $`a\cdot\exp(-t/tau)`$
+  - Stretched exponential: $`a\cdot\exp(-(t/tau)^{1/b})`$
+  - Power law decay: $`\frac{a}{1+t/t0}`$
 
 ## Core Functions
 
