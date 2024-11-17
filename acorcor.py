@@ -30,6 +30,16 @@ def corrected_exp(t, tau, n, a=1):
 
 
 def mygamma(b, x):
+    """
+    Computes the incomplete gamma function, normalized to (b-1)! at infinity.
+    
+    Parameters:
+        b (float): The shape parameter of the gamma distribution.
+        x (np.array): The values at which to evaluate the incomplete gamma function.
+    
+    Returns:
+        np.array: The values of the incomplete gamma function evaluated at the given values of x.
+    """
     b = np.float64(b)
     # print(type(b), type(x))
     # print(np.max(x))
@@ -37,11 +47,37 @@ def mygamma(b, x):
 
 
 def mygamma2(b, arg):
+    """
+    Computes the incomplete gamma function, normalized to (2*b-1)! at infinity. Specifically, Γ(2b, x^(1/b))
+    
+    Parameters:
+        b (float): The shape parameter of the gamma distribution.
+        arg (np.array): The values at which to evaluate the incomplete gamma function.
+    
+    Returns:
+        np.array: The values of the incomplete gamma function evaluated at the given values of arg.
+    """
     b = np.float64(b)
     return(gamma(2*b)*gammaincc(2*b, arg**(1/b)))
 
 
 def corrected_strex(t, tau, n, b, a=1):
+    """
+    Provides a bias-corrected stretched exponential autocorrelation function.
+    
+    Parameters:
+        t (np.array): Array of lag times of interest.
+        tau (float): Autocorrelation decay time.
+        n (int): Length of the original series used to calculate the autocorrelation function.
+        b (float): Stretching exponent for the stretched exponential.
+        a (float, optional): Amplitude of the ansatz autocorrelation function. Defaults to 1.
+    
+    Returns:
+        np.array: Bias-corrected autocorrelation estimator asymptotic form, with the same shape as `t`, at lag times `t`.
+
+    tau: the thing in: $e^{-(t/tau)^{1/b}}$.
+    you might be looking for $mrt=tau*\Gamma(b+1)$
+    """
     out = np.zeros_like(t)
     first_ind = 0
     first = np.array([])
@@ -64,6 +100,18 @@ def corrected_strex(t, tau, n, b, a=1):
     return out
 
 def c_one_over(t, t0, n, a=1):
+    """
+    Gives the autocorrelation function with bias correction of $$\frac{1}{1+t/t_0}$$.
+    
+    Parameters:
+        t (np.array): Array of lag times of interest.
+        t0 (float): Autocorrelation decay time.
+        n (int): Length of the original series used to calculate the autocorrelation function.
+        a (float, optional): Amplitude of the ansatz autocorrelation function. Defaults to 1.
+    
+    Returns:
+        np.array: Bias-corrected one-over autocorrelation estimator asymptotic form, with the same shape as `t`, at lag times `t`.
+    """
     return a*(1+t/t0)**-1 - a/n * (1-2*t0) - 2*a/(n**2*(n-t)) * (
         - np.log(t0) * t0 * (n**2 - n*t + t*t0)
         + np.log(n+t0) * (n+t0) * t*t0
@@ -105,6 +153,19 @@ def cstrex_int(n, a, b, tau, c, indices=None):
 
 
 def subcumsum(x, indices):
+    """
+    note: this is VERY slow.
+
+    Calculates the cumulative sum of a given array `x` at the specified indices.
+    
+    Parameters:
+        x (np.array): The input array to calculate the cumulative sum for.
+        indices (np.array): The indices at which to calculate the cumulative sum.
+    
+    Returns:
+        np.array: The cumulative sum of `x` at the specified indices.
+    """
+
     out = np.zeros_like(indices, float)
     prepended = False
     if indices[0] != 0:
@@ -122,7 +183,19 @@ def subcumsum(x, indices):
     return out
 
 def cexp_integral(t, tau, n, a=1):
+    """
+    Calculates the integral of the bias-corrected exponential autocorrelation function over the interval [0, t] for a given time `t`, time constant `tau`, and number of terms `n`.
     
+    Parameters:
+        t (float): The upper limit of the integral.
+        tau (float): The time constant.
+        n (int): The number of terms to use in the calculation.
+        a (float, optional): A scaling factor, defaults to 1.
+    
+    Returns:
+        float: The value of the integral.
+    """
+        
     out = -t/n + tau * (1 - np.exp(-t/tau)) - 2*t*tau/n +\
         2/n**2 * (-1+np.exp(-n/tau)) * t * tau**2
     out += 2/n*tau**2*np.exp(-n/tau) * (expi(n/tau)-expi((n-t)/tau))
