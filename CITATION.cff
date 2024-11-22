@@ -1,0 +1,24 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: acorcor
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: James E
+    family-names: Fitzgerald
+    name-suffix: III
+    email: sheafitz@udel.edu
+    affiliation: University of Delaware
+    orcid: 'https://orcid.org/0000-0002-0565-4834'
+repository-code: 'https://github.com/sheamusfitz/acorcor'
+abstract: >-
+  Bias corrected functional forms for various common
+  autocorrelation functions.
+keywords:
+  - autocorrelation
+  - autocorrelation bias
+  - autocorrelation function
