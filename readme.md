@@ -20,6 +20,15 @@ Computes the bias-corrected autocorrelation estimator for an exponential decay.
 - `n`: Length of original time series
 - `a`: Amplitude (default=1)
 
+The full form of this function is:
+
+$$
+\left\langle c_t \right\rangle/a = 
+        e^{-t/\tau} - \frac1n-\frac{2\tau}{n} + \frac{2\tau^2}{n(n-t)}\left(
+            1+e^{-t/\tau}-e^{(t-n)/\tau}-\frac tn e^{-n/\tau}
+    \right)
+$$
+
 ### corrected_strex(t, tau, b, n, a=1)
 
 Computes the bias-corrected autocorrelation estimator for a stretched exponential decay.
