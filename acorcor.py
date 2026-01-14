@@ -5,9 +5,9 @@ from numba import njit
 
 
 
-def corrected_exp(t, tau, n, a=1):
+def old_corrected_exp(t, tau, n, a=1):
     """
-    This gives the bias-corrected autocorrelation estimator, for an assumed exponential
+    This gives the **integral approximation** of the bias-corrected autocorrelation estimator, for an assumed exponential
     underlying `true' autocorrelation function. This assumes the form: 
         c(t) = a*e^(-t/tau)
 
@@ -28,6 +28,26 @@ def corrected_exp(t, tau, n, a=1):
 
     return a*out
 
+def corrected_exp(t, tau, n, a=1):
+    """
+    This gives the of the bias-corrected autocorrelation estimator, for an assumed 
+    exponential underlying `true' autocorrelation function. This assumes the form:
+        c(t) = a*e^(-t/tau)
+        Parameters:
+            t (np.array): array of lagtimes of interest
+            tau (float): autocorrelation decay time
+            n (int): length of the original series used to calculate the autocorrelation  function
+            a (float): amplitude of ansatz autocorrelation function
+
+        Returns:
+                Bias-corrected autocorrelation estimator asymptotic form, with the same shape as `t`, at lagtimes `t`.
+    Note: this is the EXACT form, computing the sums exactly, not the integral approximation (see old_corrected_exp).
+    """
+    exp = np.exp(-t/tau)
+    out = exp - 1/(n*np.tanh(1/2/tau)) + 1/(2*n*(n-t)*np.sinh(1/2/tau)**2) * (
+        t/n + exp - np.exp((t-n)/tau) - t/n * np.exp(-n/tau)
+        )
+    return a*out
 
 def mygamma(b, x):
     """
@@ -83,7 +103,7 @@ def corrected_strex(t, tau, n, b, a=1):
     first = np.array([])
     if t[0] == 0:
         first_ind = 1
-        first = a*1/n**2 * (n**2 - n + 2*b*tau**2 * gamma(2*b) - 2*tau*n*gamma(1+b) + 2*tau*b*n*mygamma(b, (n/tau)**(1/b)) - 2*tau**2*b*mygamma(2*b, (n/tau)**(1/b)))
+        first = a/n**2 * (n**2 - n + 2*b*tau**2 * gamma(2*b) - 2*tau*n*gamma(1+b) + 2*tau*b*n*mygamma(b, (n/tau)**(1/b)) - 2*tau**2*b*mygamma(2*b, (n/tau)**(1/b)))
 
     x = t[first_ind:]
     ttaub = (x/tau)**(1/b)
@@ -92,9 +112,9 @@ def corrected_strex(t, tau, n, b, a=1):
               + 2*tau*b/n * (mygamma(b, nttaub) - gamma(b))
               + 2*b*x*tau/(n*(n-x)) * (mygamma(b, (n/tau)
                                                ** (1/b)) - mygamma(b, ttaub))
-              + 2*b*x*tau**2/(n**2*(n-x)) * (
-        gamma(2*b) + n/x*mygamma(2*b, ttaub) - n/x*mygamma(2*b, nttaub)
-        - mygamma(2*b, (n/tau)**(1/b))
+              + 2*b*tau**2/(n*(n-x)) * (
+        x/n*gamma(2*b) + mygamma(2*b, ttaub) - mygamma(2*b, nttaub)
+        - x/n*mygamma(2*b, (n/tau)**(1/b))
     ))
     out = np.append(first, something)
     return out
